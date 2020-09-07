@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import logo from './logo.svg';
 import './App.css';
 import './bootstrap.min.css';
@@ -25,22 +26,30 @@ function Footer() {
 }
 function Book(props) {
  return( 
-  <div className="answer">
+  <div className="answer" onClick={props.onClick}>
     <h4>{props.title}</h4>
   </div>
   )
 }
 
-function Turn({author, books}) {
+function Turn({author, books, highlight, onAnswerSelected}) {
+  const HighLight = (highlight) => {
+    const highlightbk = {
+      'none':'',
+      'wrong': 'red',
+      'right':'green'
+    }
+    return highlightbk[highlight];
+  }
   return (
-    <div className="row turn" style={{backgroundColor:"white"}}>
+    <div className="row turn" style={{backgroundColor:HighLight(highlight)}}>
       <div className="col-4 offset-1">
-        <img src={author.imageurl} className="authorimage" alt="Author"></img>
+        <img src={author.imageurl} className="authorimage" alt={author.name}></img>
       </div>
       <div>
           {
             books.map((title)=>{
-                return <Book title={title} key={title} />
+                return <Book title={title} key={title} onClick={() => onAnswerSelected(title)}/>
               }
             )
           }
@@ -48,16 +57,28 @@ function Turn({author, books}) {
     </div>
   )
 }
+
+// Checkking Datatype of props supplied for Turn Function Component
+Turn.prototype = {
+  author: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    imageurl: PropTypes.string.isRequired,
+    books: PropTypes.arrayOf(PropTypes.string).isRequired
+  }),
+  books: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onAnswerSelected: PropTypes.func,
+  highlight: PropTypes.string.isRequired
+}
 function Continue() {
   return <div/>
 }
 
-function AuthorQuiz({turnData}) {
+function AuthorQuiz({turnData, highlight, onAnswerSelected}) {
   console.log(turnData);
   return (
     <div className="container-fuild">
     <Hero />
-    <Turn {...turnData}/>
+    <Turn {...turnData} highlight={highlight} onAnswerSelected={onAnswerSelected}/>
     <Continue />
     <Footer />
     </div>

@@ -47,15 +47,25 @@ function getTurnData(authors) {
 
 const state1 = {
   // Turn Data is for Randomly providing the data to users to play game
-    turnData: getTurnData(authors)
+    turnData: getTurnData(authors),
+    highlight: ''
 }
+const onAnswerSelected = (answer) => {
+  console.log(answer, ' answer provided')
+  const isCorrect = state1.turnData.author.books.some((book) => book === answer)
+  state1.highlight = isCorrect ? 'right' : 'wrong';
+  render();
+} 
 
+function render() {
 ReactDOM.render(
   <React.StrictMode>
-    <AuthorQuiz {...state1}/>
+    <AuthorQuiz {...state1} onAnswerSelected={onAnswerSelected}/>
   </React.StrictMode>,
   document.getElementById('root')
 );
+}
+render();
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
