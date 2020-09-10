@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import AuthorQuiz from './AuthorQuiz';
 import {shuffle, sample} from 'underscore';
+import {BrowserRouter, Route} from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 
 const authors = [
@@ -55,12 +56,26 @@ const onAnswerSelected = (answer) => {
   const isCorrect = state1.turnData.author.books.some((book) => book === answer)
   state1.highlight = isCorrect ? 'right' : 'wrong';
   render();
-} 
+}
+
+const AddAuthor = (props) => {
+  return <React.Fragment>
+    <h1>Add Author</h1> 
+    <p>{JSON.stringify(props)}</p>
+    </React.Fragment>
+}
+
+function App() {
+  return <AuthorQuiz {...state1} onAnswerSelected={onAnswerSelected}/>
+}
 
 function render() {
 ReactDOM.render(
   <React.StrictMode>
-    <AuthorQuiz {...state1} onAnswerSelected={onAnswerSelected}/>
+    <BrowserRouter>
+      <Route exact path='/' component={App}/>
+      <Route path='/add' component={AddAuthor}/>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );
