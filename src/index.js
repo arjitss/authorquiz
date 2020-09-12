@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import AuthorQuiz from './AuthorQuiz';
 import {shuffle, sample} from 'underscore';
-import {BrowserRouter, Route} from 'react-router-dom';
+import {BrowserRouter, Route, withRouter} from 'react-router-dom';
+import AddAuthor from './AddAuthor';
 import * as serviceWorker from './serviceWorker';
 
 const authors = [
@@ -45,8 +46,14 @@ function getTurnData(authors) {
     })
   }
 }
-
-const state1 = {
+function resetState (){
+  state1 = {
+    // Turn Data is for Randomly providing the data to users to play game
+      turnData: getTurnData(authors),
+      highlight: ''
+  }
+}
+let state1 = {
   // Turn Data is for Randomly providing the data to users to play game
     turnData: getTurnData(authors),
     highlight: ''
@@ -58,23 +65,31 @@ const onAnswerSelected = (answer) => {
   render();
 }
 
-const AddAuthor = (props) => {
-  return <React.Fragment>
-    <h1>Add Author</h1> 
-    <p>{JSON.stringify(props)}</p>
-    </React.Fragment>
+const onContinue = () => {
+  render();
+  resetState();
 }
 
 function App() {
-  return <AuthorQuiz {...state1} onAnswerSelected={onAnswerSelected}/>
+  return <AuthorQuiz {...state1} 
+  onAnswerSelected={onAnswerSelected}
+  onContinue={onContinue}
+  />
 }
-
+const AddAuthorWrapper = withRouter(({history}) => {
+  return <AddAuthor onAddingAuthor = { (author) => {
+    console.log(author);
+    authors.push(author);
+    history.push('/');
+    }
+  } />
+})
 function render() {
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
       <Route exact path='/' component={App}/>
-      <Route path='/add' component={AddAuthor}/>
+      <Route path='/add' component={AddAuthorWrapper}/>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
