@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import logo from './logo.svg';
 import './App.css';
 import './bootstrap.min.css';
+import {Link} from 'react-router-dom';
 
 function Hero () {
   return (
@@ -69,17 +70,22 @@ Turn.prototype = {
   onAnswerSelected: PropTypes.func,
   highlight: PropTypes.string.isRequired
 }
-function Continue() {
-  return <div/>
+function Continue(props) {
+  return <div>
+    {props.onShow ? <div className="col-11">
+      <button type="button" className="continue btn btn-primary btn-lg float-right" onClick={props.onContinue}>Continue</button>
+    </div> : null}
+    </div>
 }
 
-function AuthorQuiz({turnData, highlight, onAnswerSelected}) {
+function AuthorQuiz({turnData, highlight, onAnswerSelected, onContinue}) {
   console.log(turnData);
   return (
     <div className="container-fuild">
     <Hero />
     <Turn {...turnData} highlight={highlight} onAnswerSelected={onAnswerSelected}/>
-    <Continue />
+    <Continue onShow={highlight === 'right'} onContinue={onContinue}/>
+    <div><Link to="/add"> Add an autthor</Link></div>
     <Footer />
     </div>
   );
